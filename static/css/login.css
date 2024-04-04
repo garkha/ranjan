@@ -1,0 +1,95 @@
+
+/* STYLE OF LOGO */
+.brand{
+    font-family: sans-serif, "Helvetica Neue", "Lucida Grande", Arial;
+    font-stretch: expanded;
+    font-weight:bolder;
+    letter-spacing: 2px;
+    font-size: 22px;
+}
+
+/* STYLE OF LOGIN AND SIGN UP BUTTONS */
+.form-changer{
+    border: none; /* Remove default button border */
+    background-color: transparent; /* Set background color to transparent */
+
+    padding: 10px 20px; /* Adjust padding as needed */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    border-radius: 0;
+    font-weight: bold;
+}
+
+/* SET BOTTON BOARDER COLOR */
+.set-border{
+    border-bottom: 2px solid #0000ff; /* Add red bottom border */
+    color: #0000ff; /* Set text color */
+}
+
+
+
+.form-label{
+    color: black;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+}
+
+.requiredFiled{
+    color: red;
+}
+
+
+
+
+
+
+.form-container-inner{
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 30px;
+    padding-top: 10px;
+
+    margin-left: 100px;
+    margin-right: 100px;
+    margin-top: 70px;
+}
+
+/* CHANGE ICON COLOR */
+.fa-regular{
+    color: red;
+}
+.icon-correct{
+    color: rgb(16, 168, 61);
+}
+.iti{
+    width: 100%;
+}
+.password-validation{
+    font-size: small;
+}
+
+.password-container{
+    display: flex;
+    align-items: center;
+    /* border: 1px solid #aaa;
+    border-radius: 4px; */
+    
+} 
+.password-container input{
+    font-size: medium;
+}
+
+.password-container i{
+    margin: -40px;
+    cursor: default;
+    color: black;
+}
+input{
+    height: 35px;
+}
+.right-side-div{
+    height: 640px;
+    width: 100%;
+    background-image: url("/static/images/login/yoga.png");
+    background-size: cover; /* Adjusts the background image size */
+    background-repeat: no-repeat; /* Prevents background image from repeating */
+    background-position: center; 
+}

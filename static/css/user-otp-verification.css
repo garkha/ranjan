@@ -1,0 +1,39 @@
+/* STYLE OF LOGO */
+.brand{
+    font-family: sans-serif, "Helvetica Neue", "Lucida Grande", Arial;
+    font-stretch: expanded;
+    font-weight:bolder;
+    letter-spacing: 2px;
+    font-size: 22px;
+}
+.form-label{
+    color: black;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    /* font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; */
+    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+}
+.right-side-div{
+    height: 650px;
+    width: 100%;
+    background-image: url("/static/images/login/yoga.png");
+    background-size: cover; /* Adjusts the background image size */
+    background-repeat: no-repeat; /* Prevents background image from repeating */
+    background-position: center; 
+}
+
+input{
+    text-align: center;
+    width:45px;
+    height: 35px;
+    padding: 10px;
+}
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+.outer-container{
+    margin-left: 25px;
+    margin-right: 25px;
+}
+.requiredFiled{
+    color: red;
+}

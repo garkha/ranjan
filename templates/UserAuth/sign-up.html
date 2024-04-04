@@ -1,0 +1,179 @@
+<!-- Extand Layout -->
+{% extends 'UserAuth/PreeAuthentication.html' %}
+
+
+<!-- Send Data for title -->
+{% block title %} 
+    Login
+{% endblock%}
+
+
+<!-- Send STYLE AND JS in a Head tag -->
+{% block head_stylle_and_js %}
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/' + 'login.css') }}">
+{% endblock %}
+
+
+
+
+
+
+<!-- Send JS in body tag -->
+{% block body_js %}
+    <!-- Custom js -->
+    <script src="{{ url_for('static', filename='javascript/sign-up.js') }}"></script>
+
+{% endblock %}
+
+
+
+<!-- Send data in body tag -->
+{% block body %}
+<div class="row justify-content-center">
+
+    <!-- LEFT SIDE DIV -->
+    <div class="col-md-6">
+
+        <div class="brand text-left mx-4 pt-3">
+            <img class="brand" src="{{ url_for('static', filename='images/login/' + 'logo.png') }}" width="auto" height="55" alt="">
+            <span>LovenHeal</span>
+        </div>
+
+        <div class="form-container-inner shadow-lg rounded-4 mt-3">
+            <div class="formContainer ">
+                <div class="row">
+                    <div class="col-md-6 d-grid">
+                        <button type="button" id="LoginBtn" class="form-changer">Log In</button>
+                    </div>
+                    <div class="col-md-6 d-grid">
+                        <button type="button" id="SignunBtn" class="form-changer set-border">Sign Up</button>
+                    </div>
+                </div>
+
+                <!---- SIGN UP FORM ---->
+                <div class="mt-3" id="SignUpForm">
+                    <form action="/sign-up" method="post" id="signup_form">
+                        <div class="row mb-2">
+                            <div class="col-md-6">
+                                <label for="firstName" class="form-label mb-1">Fisrt Name <span class="requiredFiled">*</span></label>
+                                <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="lastName" class="form-label mb-1">Last Name <span class="requiredFiled">*</span></label>
+                                <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="gender" class="form-label mb-1">Gender</label>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="gender" id="gender" value="male">
+                                        <label class="form-check-label" for="male">Male</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="gender" id="gender" value="female">
+                                        <label class="form-check-label" for="female">Female</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="gender" id="gender" value="other">
+                                        <label class="form-check-label" for="other">Other</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-2">
+                            <label for="email" class="form-label mb-1">Email address</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="abc@gmail.com">
+                        </div>
+                        
+                        <div class="mb-2">
+                            <label for="Username" class="form-label mb-1">Username <span class="requiredFiled">*</span></label>
+                            <input id="country_code" name="country_code" type="hidden">
+                            <input class="form-control mobileNumber" id="mobileNo" name="username" type="tel" placeholder="Enter your 10 digits phone number" required>
+                        </div>
+                        <div class="mb-2">
+                            <label for="password" class="form-label mb-1">Password <span class="requiredFiled">*</span></label>
+                            <div class="password-container">
+                                <input type="password" class="form-control" id="signUpPassword" name="signUpPassword" placeholder="Enter password" required>
+                                <i class="fa-regular fa-eye-slash Visibility-2"></i>
+                            </div>
+                        </div>
+                        <div class="mb-2 password-validation">
+                            <i class="fa-regular fa-circle-xmark" id="iv1"></i><span id="v1"> Contain at least 8 characters</span><br>
+                            <i class="fa-regular fa-circle-xmark" id="iv3"></i><span id="v3"> Contain uppercase and lowercase letters</span><br>
+                            <i class="fa-regular fa-circle-xmark" id="iv2"></i><span id="v2"> Contain at least one number and one special character </span><br>
+                        </div>
+                        <div class="mb-2">
+                            <label for="password" class="form-label mb-1">Confirm Password <span class="requiredFiled">*</span></label>
+                            <div class="password-container">
+                                <input type="password" class="form-control" id="signUpConfirmPassword" name="signUpConfirmPassword" placeholder="Confirm password" required>
+                                <i class="fa-regular fa-eye-slash Visibility-3"></i>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-block form-control mt-1">Sign Up</button>
+                    </form>
+
+                </div>
+                <!-- END SIGN UP FORM -->
+                
+            </div>
+            
+        </div>
+    </div>
+    <!-- END LEFT SIDE DIV -->
+
+    <!-- RIGHT SIDE DIV -->
+    <div class="col-md-6">
+        <div class="text-center right-side-div"></div>
+        <!-- <img id="login-img" src="{{ url_for('static', filename='images/login/' + 'pexels-mikhail-nilov-6944924.jpg') }}" alt=""> -->
+    </div>
+    <!-- END RIGHT SIDE DIV -->
+
+</div>
+</div>
+
+{% endblock %}
+
+
+
+<!-- SWEET ALERT SHOW IN SCRIPT TAG -->
+{% block sweet_alert %}
+    {% if success_message %}
+        <script>
+            window.addEventListener('load', function() {
+                Swal.fire({
+                title: 'Success!',
+                text: '{{success_message}}',
+                icon: 'success',
+                confirmButtonText: 'Submit'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "/otp-verification";
+                    } 
+                });
+            });
+        </script>
+    {% endif %}
+    {% if error_message %}
+        <script>
+            window.addEventListener('load', function() {
+                Swal.fire({
+                title: 'Error!',
+                text: '{{error_message}}',
+                icon: 'error',
+                confirmButtonText: 'Try again'
+                });
+            });
+        </script>
+    {% endif %}
+{% endblock %}
+<!-- END SWEET ALERT SHOW IN SCRIPT TAG -->

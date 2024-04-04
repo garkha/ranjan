@@ -1,0 +1,119 @@
+<!-- Extand Layout -->
+{% extends 'UserAuth/PreeAuthentication.html' %}
+
+
+<!-- Send Data for title -->
+{% block title %} 
+user otp verification
+{% endblock%}
+
+
+<!-- Send STYLE AND JS in a Head tag -->
+{% block head_stylle_and_js %}
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/' + 'user-otp-verification.css') }}">
+{% endblock %}
+
+
+
+<!-- Send JS in body tag -->
+{% block body_js %}
+    <!-- Custom js -->
+    <script src="{{ url_for('static', filename='javascript/user-otp-verification.js') }}"></script>
+{% endblock %}
+
+
+
+<!-- Send data in body tag -->
+{% block body %}
+<div class="row justify-content-center">
+
+    <!-- LEFT SIDE DIV -->
+    <div class="col-md-6">
+        <div class="brand text-left mx-4 pt-3">
+            <img class="brand" src="{{ url_for('static', filename='images/login/' + 'logo.png') }}" width="auto" height="55" alt="">
+            <span>LovenHeal</span>
+        </div>
+        <div class="outer-container p-5">
+            <div class="inner-container shadow-lg rounded-4 px-4 py-4 mt-5 mx-5">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p class="h5 fw-bold">OTP Verification</p>
+                        <p class="text-body-secondary fw-lighter">Please check yur SMS for OTP to verify your account</p>
+                    </div>
+                </div>
+                <div class="row text-center mb-4">
+                    <span id="timer" class="fw-bold"></span>
+                </div>
+                <form action="{{url_for('verifyOTP')}}" method="post">
+
+                    <div class="row text-center justify-content-center mb-3">
+                        <div class="col-sm-2 px-1"><input type="number" maxlength="1" name="f1" id="f1" placeholder="X"></div>
+                        <div class="col-sm-2 px-1"><input type="number" maxlength="1" name="f2" id="f2" placeholder="X"></div>
+                        <div class="col-sm-2 px-1"><input type="number" maxlength="1" name="f3" id="f3" placeholder="X"></div>
+                        <div class="col-sm-2 px-1"><input type="number" maxlength="1" name="f4" id="f4" placeholder="X"></div>
+                        <div class="col-sm-2 px-1"><input type="number" maxlength="1" name="f5" id="f5" placeholder="X"></div>
+                        <div class="col-sm-2 px-1"><input type="number" maxlength="1" name="f6" id="f6" placeholder="X"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 md-3">
+                            <button type="submit" id="submit" class="btn btn-primary btn-block form-control">submit</button>
+                        </div>
+                        <div class="md-12 text-center mt-3">
+                            <span class="text-primary"><a href="{{url_for('login')}}" style="text-decoration: none;">Back to the login</a></span>
+                        </div>
+                    </div>
+
+                </form>
+                
+            </div>
+        </div>
+
+    </div>
+    <!-- END LEFT SIDE DIV -->
+
+    <!-- RIGHT SIDE DIV -->
+    <div class="col-md-6">
+        <div class="text-center right-side-div"></div>
+    </div>
+    <!-- END RIGHT SIDE DIV -->
+
+</div>
+{% endblock %}
+
+
+
+<!-- SWEET ALERT SHOW IN SCRIPT TAG -->
+{% block sweet_alert %}
+    {% if success_message %}
+        <script>
+            window.addEventListener('load', function() {
+                Swal.fire({
+                title: 'Success!',
+                text: '{{success_message}}',
+                icon: 'success',
+                confirmButtonText: 'Submit'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "/login";
+                    } 
+                });
+            });
+            
+        </script>
+    {% endif %}
+    {% if error_message %}
+        <script>
+            window.addEventListener('load', function() {
+                Swal.fire({
+                title: 'Error!',
+                text: '{{error_message}}',
+                icon: 'error',
+                confirmButtonText: 'Try again'
+                });
+            });
+            
+        </script>
+    {% endif %}
+{% endblock %}
+<!-- END SWEET ALERT SHOW IN SCRIPT TAG -->
