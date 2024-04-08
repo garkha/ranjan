@@ -1,10 +1,7 @@
 
 /* STYLE OF LOGO */
 .brand{
-    font-family: sans-serif, "Helvetica Neue", "Lucida Grande", Arial;
-    font-stretch: expanded;
     font-weight:bolder;
-    letter-spacing: 2px;
     font-size: 22px;
 }
 
@@ -12,7 +9,6 @@
 .form-changer{
     border: none; /* Remove default button border */
     background-color: transparent; /* Set background color to transparent */
-
     padding: 10px 20px; /* Adjust padding as needed */
     cursor: pointer; /* Change cursor to pointer on hover */
     border-radius: 0;
@@ -29,7 +25,6 @@
 
 .form-label{
     color: black;
-    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
 }
 
 .requiredFiled{

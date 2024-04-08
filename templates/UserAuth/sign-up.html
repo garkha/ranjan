@@ -54,9 +54,10 @@
                 <!---- SIGN UP FORM ---->
                 <div class="mt-3" id="SignUpForm">
                     <form action="/sign-up" method="post" id="signup_form">
+                        <span id="error_message" class="error_message" style="display: none;"></span>
                         <div class="row mb-2">
                             <div class="col-md-6">
-                                <label for="firstName" class="form-label mb-1">Fisrt Name <span class="requiredFiled">*</span></label>
+                                <label for="firstName" class="form-label mb-1">First Name <span class="requiredFiled">*</span></label>
                                 <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" required>
                             </div>
                             <div class="col-md-6">
@@ -147,33 +148,18 @@
 
 <!-- SWEET ALERT SHOW IN SCRIPT TAG -->
 {% block sweet_alert %}
+
     {% if success_message %}
         <script>
-            window.addEventListener('load', function() {
-                Swal.fire({
-                title: 'Success!',
-                text: '{{success_message}}',
-                icon: 'success',
-                confirmButtonText: 'Submit'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = "/otp-verification";
-                    } 
-                });
-            });
+           
         </script>
     {% endif %}
     {% if error_message %}
-        <script>
-            window.addEventListener('load', function() {
-                Swal.fire({
-                title: 'Error!',
-                text: '{{error_message}}',
-                icon: 'error',
-                confirmButtonText: 'Try again'
-                });
-            });
-        </script>
+    <script>
+        
+        document.getElementById("error_message").style.display = "block";
+        document.getElementById("error_message").innerHTML = "{{error_message}}";
+    </script>
     {% endif %}
 {% endblock %}
 <!-- END SWEET ALERT SHOW IN SCRIPT TAG -->

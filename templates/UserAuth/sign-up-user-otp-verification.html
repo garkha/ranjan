@@ -20,6 +20,7 @@ user otp verification
 {% block body_js %}
     <!-- Custom js -->
     <script src="{{ url_for('static', filename='javascript/user-otp-verification.js') }}"></script>
+    
 {% endblock %}
 
 
@@ -39,7 +40,9 @@ user otp verification
                 <div class="row">
                     <div class="col-sm-12">
                         <p class="h5 fw-bold">OTP Verification</p>
-                        <p class="text-body-secondary fw-lighter">Please check yur SMS for OTP to verify your account</p>
+                        <span id="error_message" class="error_message"></span>
+                        <span id="success_message" class="success_message"></span>
+                        <p class="text-body-secondary fw-lighter">Please check your SMS for OTP to verify your account</p>
                     </div>
                 </div>
                 <div class="row text-center mb-4">
@@ -59,12 +62,18 @@ user otp verification
                         <div class="col-md-12 md-3">
                             <button type="submit" id="submit" class="btn btn-primary btn-block form-control">submit</button>
                         </div>
-                        <div class="md-12 text-center mt-3">
-                            <span class="text-primary"><a href="{{url_for('login')}}" style="text-decoration: none;">Back to the login</a></span>
-                        </div>
                     </div>
 
                 </form>
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        <a href="{{url_for('login')}}" style="text-decoration: none;">Back to the Login</a>
+                    </div>
+                    <div class="col-md-2"> </div>
+                    <div class="col-md-4">
+                        <a href="{{url_for('otp_resend')}}" style="text-decoration: none;">Re-send OTP</a>
+                    </div>
+                </div>
                 
             </div>
         </div>
@@ -85,34 +94,24 @@ user otp verification
 
 <!-- SWEET ALERT SHOW IN SCRIPT TAG -->
 {% block sweet_alert %}
-    {% if success_message %}
+    {% if session['otp_message'] %}
         <script>
-            window.addEventListener('load', function() {
-                Swal.fire({
-                title: 'Success!',
-                text: '{{success_message}}',
-                icon: 'success',
-                confirmButtonText: 'Submit'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = "/login";
-                    } 
-                });
-            });
+            if ("{{session['otp_message']}}" =="OTP sent successfully"){
+                document.getElementById("error_message").innerHTML = "";
+                document.getElementById("success_message").innerHTML = "{{session['otp_message']}}";
+            }
+            if ("{{session['otp_message']}}" =="OTP Not sent"){
+                document.getElementById("success_message").innerHTML = "";
+                document.getElementById("error_message").innerHTML = "{{session['otp_message']}}";
+            }
+            
             
         </script>
     {% endif %}
     {% if error_message %}
         <script>
-            window.addEventListener('load', function() {
-                Swal.fire({
-                title: 'Error!',
-                text: '{{error_message}}',
-                icon: 'error',
-                confirmButtonText: 'Try again'
-                });
-            });
-            
+            document.getElementById("success_message").innerHTML = "";
+            document.getElementById("error_message").innerHTML = "{{error_message}}"
         </script>
     {% endif %}
 {% endblock %}

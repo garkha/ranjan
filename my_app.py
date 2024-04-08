@@ -7,12 +7,25 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
 
 
+# -------------------------------------------------------------#
+        # DOMAIN NAME CONTROL
+# -------------------------------------------------------------#
+@app.route('/')
+def display_index_page():
+    return redirect(url_for('login'))
+
+
+# domail_name = "http://reachlovenheal.com:"
+domail_name = "http://185.199.53.169:"
+port_name = "8080"
+base_url = f'{domail_name}{port_name}'
 
 # -------------------------------------------------------------#
         # THIS ROUTE FOR DISPLAY LOGIN PAGE
 # -------------------------------------------------------------#
 @app.route('/login')
 def login():
+    session.clear()
     return render_template('UserAuth/login.html')
 
 
@@ -39,11 +52,21 @@ def authenticate():
         return resp
     else:
         message = data.get('message')
+        
+        # If user account allready created but user not confirm his mobile no
+        # resend otp to verify 
+        if message == "User is not Confirmed":
+            if resend_otp(username):
+                username = session['username']
+                return redirect(url_for('otp'))
+        
+        password_error_message = None
+        username_error_message = None
         if message == "Unauthorized":
-            message = "Worng password"
+            password_error_message = "Invalid password"
         else:
-            message = f'The phone no. {mobile_no} is not registerd with us.'
-        return render_template('UserAuth/login.html',error_message = message,mobile_no=mobile_no)
+            username_error_message = "Invalid username"
+        return render_template('UserAuth/login.html',password_error_message = password_error_message,mobile_no=mobile_no,username_error_message=username_error_message)
         
         
          
@@ -53,6 +76,7 @@ def authenticate():
 # -------------------------------------------------------------#
 @app.route('/sign-up')
 def displaySignUpPage():
+    session.clear()
     return render_template('UserAuth/sign-up.html')
 
 @app.route('/sign-up',methods=['POST'])
@@ -78,19 +102,19 @@ def signUp():
 
     # IF PASSWORD AND CONFIRM PASSWORD NOT MATCH
     if password != confirmPassword:
-        flash("Password and Confirm password not match" )
-        return redirect(request.referrer)
+        message = "Password and Confirm password not match"
+        return render_template('UserAuth/sign-up.html',error_message=message)
+
 
     response = createUser(firstName,lastName,gender,email,username,password)
     data = response.json()
 
     if response.status_code == 200:
         
-        message = f'OTP {data.get('otpCode')}'
-        session['username'] = username 
-        return render_template('UserAuth/sign-up.html',success_message=message)
+        session['username'] = username
+        return redirect('/otp-verification')
     else:
-        message = data.get('errors').get('message')
+        message = "A user already exists with this username"
         return render_template('UserAuth/sign-up.html',error_message=message)
 
 
@@ -105,12 +129,11 @@ def otp():
         # If 'user_data' exists, retrieve it
         username = session['username']
     else:
-        message = "Username not found or not set."
-        return render_template('UserAuth/login.html',error_message = message)
+        return redirect(url_for('login'))
     
     return render_template("UserAuth/sign-up-user-otp-verification.html")
 
-@app.route('/otp-verifications',methods=["POST"])
+@app.route('/otp-verification',methods=["POST"])
 def verifyOTP():
     
     if 'username' in session:
@@ -142,8 +165,7 @@ def verifyOTP():
         message = "OTP code verified successfully. Please Login with your username and password."
         return render_template('UserAuth/sign-up-user-otp-verification.html',success_message = message)
     else:
-        data = response.json()
-        message = data.get('errors').get('message')
+        message = "OTP is invalid. Please enter correct OTP."
         return render_template('UserAuth/sign-up-user-otp-verification.html',error_message=message)
         
 
@@ -185,17 +207,26 @@ def dislay_user_detail():
 # Change Password - post
 @app.route('/user-change-password',methods=['POST'])
 def sent_top_to_user_phone():
+
     user = access_user_data_from_coocki()
     username = user.get('username')
     response = reset_user_password(username) 
     data = response.json()
 
+
     if response.status_code == 200:
-        message = data.get('otpCode')
-        return render_template('Auth-user/user-change-password-one.html',success_message= message)
+
+        # This message var cantain responce message after sendind otp
+        # message = data.get('otpCode') 
+        # return render_template('Auth-user/user-change-password-one.html',success_message= message)
+        return redirect(url_for('display_otp_verification_page'))
+        
     else:
         message = data.get('errors').get('message')
-        return render_template('Auth-user/user-change-password-one.html',error_message= message)
+        user = access_user_data_from_coocki()
+        user_phone_number = user.get('username')
+        phone = display_last_four_digits(user_phone_number)
+        return render_template('Auth-user/user-change-password-one.html',phone=phone,error_message= message)
     
 
 # -------------------------------------------------------------#
@@ -229,11 +260,9 @@ def user_verify_otp():
     
     if response.status_code == 200:
         session['otpCode'] = otpCode
-        message = "Well done. OTP verified successfully"
-        return render_template('Auth-user/user-change-password-two.html',success_message=message)
+        return redirect(url_for('display_user_update_password_page'))
     else:
-        data = response.json()
-        message = data.get('errors').get('message')
+        message = "OTP is invalid. Please enter correct OTP."
         return render_template('Auth-user/user-change-password-two.html',error_message=message)
         
     
@@ -269,7 +298,7 @@ def user_update_password():
     response = change_user_password(username,otpCode,new_password)
     if response.status_code == 200:
         data = response.json()
-        message = data.get('message')
+        message = "Your password is updated successfully. Please login again with your new password."
         # Delete the username and otp code after the change password
         session.pop('otpCode', None)
 
@@ -308,19 +337,21 @@ def displayForgotPasswordPage():
 @app.route('/forgot-password',methods=['POST'])
 def send_otp_for_reset_password():
     # Call user reset password function 
-    username = request.form.get('username')
+    mobile_no = request.form.get('username')
+    country_code = request.form.get('country_code')
+    username = f'+{country_code}{mobile_no}'
     
     # Check the phone number length
     if len(username) != 13:
         message = "Phone number should be 10 digits for Country code india."
         return render_template('UserAuth/forgot-password-step-one.html',error_message= message)
     
-    response = reset_user_password(request.form.get('username')) 
+    response = reset_user_password(username) 
     data = response.json()
     if response.status_code == 200:
-        session['username'] = request.form.get('username')
+        session['username'] = username
         message = data.get('otpCode')
-        return render_template('UserAuth/forgot-password-step-one.html',success_message= message)
+        # return render_template('UserAuth/forgot-password-step-one.html',success_message= message)
         return redirect(url_for('display_forgot_password_verify_otp'))
     else:
         message = data.get('errors').get('message')
@@ -364,14 +395,11 @@ def forgot_password_verify_otp():
     
     if response.status_code == 200:
         session['otpCode'] = otpCode
-        message = "Well done. OTP verified successfully"
-        return render_template('UserAuth/forgot-password-verify-otp-step-2.html',success_message=message)
         return redirect(url_for('display_change_password'))
     else:
-        data = response.json()
-        message = data.get('errors').get('message')
+        message = "OTP is invalid. Please enter correct OTP."
         return render_template('UserAuth/forgot-password-verify-otp-step-2.html',error_message=message)
-        return redirect(request.referrer)
+        
 
 
 # -------------------------------------------------------------#
@@ -412,7 +440,7 @@ def update_user_password():
     response = change_user_password(username,otpCode,new_password)
     if response.status_code == 200:
         data = response.json()
-        message = data.get('message')
+        message = "Your password has been change successfully. Please Login with your new password"
 
         # Delete the username and otp code after the change password
         session.pop('username', None) 
@@ -438,6 +466,7 @@ def logout():
 
         # Delete the username and otp code after the change password
         session.pop('otpCode', None)
+        session.clear()
 
         # Create a response object COOKI DELETED
         resp = make_response(render_template('Auth-user/dashboard.html',success_message=message))
@@ -448,8 +477,29 @@ def logout():
         return render_template('Auth-user/dashboard.html',error_message=message)
         
 
+# -------------------------------------------------------------#
+            # API RE-SEND OTP
+# -------------------------------------------------------------#
+@app.route('/re-send-otp')
+def otp_resend():
+    username = None
+    if 'username' in session:
+        username = session['username']
 
+    user = access_user_data_from_coocki()
+    if user:
+        username = user.get('username')
 
+    if username == None:
+        return "User Not found"
+    
+    if resend_otp(username):
+        session['otp_message'] = "OTP sent successfully"
+        return redirect(request.referrer)
+    else:
+        session['otp_message'] = "OTP Not sent"
+        return redirect(request.referrer)
+    
 
 # -------------------------------------------------------------#
             # API CALLING FUNCTIONS
@@ -457,7 +507,8 @@ def logout():
 
 def userAuthenticate(username,password):
     # THIS IS API RUL
-    url = 'http://185.199.53.169:8080/core/auth/public/login'
+    # url = 'http://185.199.53.169:8080/core/auth/public/login'
+    url = f'{base_url}/core/auth/public/login'
     
     # HEADERS
     headers = {
@@ -477,7 +528,7 @@ def userAuthenticate(username,password):
 
 def createUser(first_name,last_name,gender,email,username,password):
     # THIS IS END POINT FOR API RUL
-    url = 'http://185.199.53.169:8080/core/auth/public/signup'
+    url = f'{base_url}/core/auth/public/signup'
     
     # HEADERS
     headers = {
@@ -503,7 +554,7 @@ def createUser(first_name,last_name,gender,email,username,password):
 
 def verifyUser(username,otpcode):
     # THIS IS END POINT FOR API RUL
-    url = 'http://185.199.53.169:8080/core/auth/public/confirmOtp'
+    url = f'{base_url}/core/auth/public/confirmOtp'
     
     # HEADERS
     headers = {
@@ -525,7 +576,7 @@ def reset_user_password(username):
 
     # api url for reset password 
     # if the user exist send to otp to their registerd mobile no.
-    url = 'http://185.199.53.169:8080/core/auth/public/resetpassword'
+    url = f'{base_url}/core/auth/public/resetpassword'
     
     # HEADERS
     headers = {
@@ -546,7 +597,7 @@ def reset_user_password(username):
 def verify_user_otp(username,otpCode):
     # api url for verify otp 
     # if the otp is valid then it will not return status code 200.
-    url = 'http://185.199.53.169:8080/core/auth/public/confirmOtp'
+    url = f'{base_url}/core/auth/public/confirmOtp'
     
     # HEADERS
     headers = {
@@ -567,7 +618,7 @@ def verify_user_otp(username,otpCode):
 def change_user_password(username,otpCode,new_password):
     # api url for change password 
     # if the otp is valid then it will not return status code 200.
-    url = 'http://185.199.53.169:8080/core/auth/public/changepassword'
+    url = f'{base_url}/core/auth/public/changepassword'
     
     # HEADERS
     headers = {
@@ -588,7 +639,8 @@ def change_user_password(username,otpCode,new_password):
 
 
 def user_logout():
-    url = 'http://185.199.53.169:8080/core/auth/logout'
+    session.clear()
+    url = f'{base_url}/core/auth/logout'
     # access username from coocki
     user = access_user_data_from_coocki()
     accessToken = user.get('accessToken')
@@ -602,6 +654,27 @@ def user_logout():
     return response
 
     
+def resend_otp(username):
+    # url for resend otp
+    url = f'{base_url}/core/auth/public/resendOtp'
+    
+    # HEADERS
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+    
+    # DATA SENT BY POST REQUEST
+    body = {
+        'username' : username,
+    }
+
+    # POST request to the API and stored result in responce veriable
+    response = requests.post(url, headers=headers, json=body)
+    if response.status_code == 200:
+        return True
+    else:
+        return False
 
 
 def access_user_data_from_coocki():

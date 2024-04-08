@@ -7,23 +7,7 @@ var iti_username = window.intlTelInput(username, {
     showSelectedDialCode : true,
 });
 username.addEventListener('change', function() {
-    var fullNumber = iti_username.getNumber();
-    this.value = fullNumber;
-    console.log(fullNumber); // This will log the full number with country code
-});
-
-// ALERT MESSAGE IF MOBILE NUMBER NOT 10 13 DIGIT "+91" 
-document.getElementById('forgot_password').addEventListener("submit",function(event){
-    //ACCESS FORM ALL INPUTS
-    const phone_number = document.getElementById('username').value;
-    if (phone_number.length != 13) {
-        event.preventDefault();
-        // Alert if password not 6 digits
-        Swal.fire({
-            title: 'Error!',
-            text: 'Phone number should be 10 digits for Country code india.',
-            icon: 'error',
-            confirmButtonText: 'Try again'
-        });
-    }
+    // For country code only
+    var country_code = iti_username.getSelectedCountryData().dialCode; // RETURN DIAL CODE
+    document.getElementById("country_code").value = country_code;
 });

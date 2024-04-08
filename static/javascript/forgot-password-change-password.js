@@ -128,17 +128,19 @@ document.getElementById('signUpConfirmPassword').addEventListener("keyup", funct
 })
 
 document.getElementById('update_user_password').addEventListener("submit",function(event){
+    const new_pas = document.getElementById("signUpPassword").value;
+    const cnf_pas = document.getElementById("signUpConfirmPassword").value;
+
     if (!(password_validation_one && password_validation_two && password_validation_three && password_validation_four)) {
         event.preventDefault();
-        // Alert if password roole is not follow
-        Swal.fire({
-            title: 'Error!',
-            text: 'Please follow the password rule',
-            icon: 'error',
-            confirmButtonText: 'Try again'
-        });
-        
+        document.getElementById("error_message").innerHTML = "Follow the password rules.";
     }
+
+    if (new_pas != cnf_pas) {
+        document.getElementById("error_message").innerHTML = "New password and confirm password are not match.";
+        event.preventDefault();
+    }
+    
 });
 
 

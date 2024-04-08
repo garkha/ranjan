@@ -59,13 +59,7 @@ document.getElementById('login_form').addEventListener("submit",function(event){
     if (username.value.length != 10) {
         event.preventDefault();
         // Alert if password not 6 digits
-
-        Swal.fire({
-            title: 'Error!',
-            text: `Phone number ${username.value} must be 10 digits.`,
-            icon: 'error',
-            confirmButtonText: 'Try again'
-        });
+        document.getElementById("username_error_message").innerHTML = "Invalid username";
     }
         
 
@@ -73,25 +67,14 @@ document.getElementById('login_form').addEventListener("submit",function(event){
     if (username.value == null) {
         event.preventDefault();
         // Alert if password not 6 digits
-        Swal.fire({
-            title: 'Error!',
-            text: 'Phone number can not be blanck',
-            icon: 'error',
-            confirmButtonText: 'Try again'
-        });
+        document.getElementById("username_error_message").innerHTML = "Invalid username";
     }
 
     // CHECK THE password can not be blanck
     if (password.value == null) {
         event.preventDefault();
         // Alert if password not 6 digits
-        Swal.fire({
-            title: 'Error!',
-            text: 'Please Enter the valid password',
-            icon: 'error',
-            confirmButtonText: 'Try again'
-        });
+        document.getElementById("password_error_message").innerHTML = "Invalid Password";
     }
-    
       
 });

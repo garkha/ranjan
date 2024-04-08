@@ -162,16 +162,20 @@ document.getElementById('signup_form').addEventListener("submit",function(event)
     let email = document.getElementById("email");
     let password = document.getElementById("signUpPassword");
     let confirm_password = document.getElementById("signUpConfirmPassword");
+
+    // CHECK THE NEW PASSWORD AND CONFIRM PASSWORD 
+    if (password.value == null || confirm_password.value == null) {
+        event.preventDefault();
+        document.getElementById("error_message").style.display = "block";
+        document.getElementById("error_message").innerHTML = "Please Enter the valid password";
+    }
     
 
     if (first_name.value == null || last_name.value == null || mobileNo.value == null || password.value == null || confirm_password.value ==null) {
         event.preventDefault();
-        Swal.fire({
-            title: 'Error!',
-            text: 'All input Filds are required',
-            icon: 'error',
-            confirmButtonText: 'Try again'
-        });     
+        document.getElementById("error_message").style.display = "block";
+        document.getElementById("error_message").innerHTML = "All mandatory inputs are required ";
+          
     }
     
 
@@ -184,63 +188,32 @@ document.getElementById('signup_form').addEventListener("submit",function(event)
     if (myemail) {
         if (!validateEmail(myemail)) {
             event.preventDefault();
-            Swal.fire({
-                title: 'Error!',
-                text: 'Please enter a valid email address.',
-                icon: 'error',
-                confirmButtonText: 'Try again'
-            });
+            document.getElementById("error_message").style.display = "block";
+            document.getElementById("error_message").innerHTML = "Please enter a valid email address.";
         } 
     }
     
     
-    // CHECK THE LENGHT OF phone
-    if (mobileNo.value.length != 10) {
-        event.preventDefault();
-        // Alert if password not 6 digits
-        Swal.fire({
-            title: 'Error!',
-            text: 'Phone number must be 10 digits. Phone number will become your username.',
-            icon: 'error',
-            confirmButtonText: 'Try again'
-        });
-    }
+    
 
-        
+    
 
-    // CHECK THE password can not be blanck
-    if (password.value == null || confirm_password.value == null) {
-        event.preventDefault();
-        // Alert if password not 6 digits
-        Swal.fire({
-            title: 'Error!',
-            text: 'Please Enter the valid password',
-            icon: 'error',
-            confirmButtonText: 'Try again'
-        });
-    }
-
-    // CHECK THE password can not be blanck
+    // CHECK THE new password and confirm password
     if (password.value != confirm_password.value) {
         event.preventDefault();
-        // Alert if password not 6 digits
-        Swal.fire({
-            title: 'Error!',
-            text: 'Password and confirm password not match',
-            icon: 'error',
-            confirmButtonText: 'Try again'
-        });
+        document.getElementById("error_message").style.display = "block";
+        document.getElementById("error_message").innerHTML = "Password and confirm password not match";
+        
+        
     }
     
     // Apassword ruls are validate
     if (!(password_validation_one && password_validation_two && password_validation_three && password_validation_four)) {
         event.preventDefault();
-        Swal.fire({
-            title: 'Error!',
-            text: 'Please follow the password rule',
-            icon: 'error',
-            confirmButtonText: 'Try again'
-        });
+        document.getElementById("error_message").style.display = "block";
+        document.getElementById("error_message").innerHTML = "Please follow the password rules. ";
+        
     }
+    
       
 });

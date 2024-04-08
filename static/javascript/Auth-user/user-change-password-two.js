@@ -35,7 +35,7 @@ inputs.forEach(function(input, index) {
 var count = 60;
 let id = setInterval(function(){
     count--;
-    document.getElementById("timer").innerHTML = "Re-send OTP after " + count + " Second";
+    document.getElementById("timer").innerHTML = "OTP is valid for only " + count + " Second";
     if(count==0){
         clearInterval(id);
         document.getElementById("timer").innerHTML = "Re Send OTP";
