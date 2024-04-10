@@ -57,7 +57,7 @@ def authenticate():
         # resend otp to verify 
         if message == "User is not Confirmed":
             if resend_otp(username):
-                username = session['username']
+                session['username'] = username
                 return redirect(url_for('otp'))
         
         password_error_message = None
